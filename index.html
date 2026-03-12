@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Estado de Informes y Planillas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #ecf0f1;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --accent: #3498db;
+            --text-dark: #2d3436;
+            --text-light: #636e72;
+            --white: #ffffff;
+            --bg-body: #f4f7f6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-dark);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Encabezado Principal */
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #1e3799, #27ae60);
+            border-radius: 15px;
+            color: white;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        header p {
+            opacity: 0.9;
+            margin-top: 10px;
+            font-weight: 300;
+        }
+
+        /* Grid de Tarjetas */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        /* Estilo de las Cards */
+        .card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-top: 5px solid var(--accent);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px rgba(0,0,0,0.1);
+        }
+
+        .card-header {
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+        }
+
+        .card-header h2 {
+            font-size: 1.25rem;
+            color: var(--primary);
+        }
+
+        .role-badge {
+            display: inline-block;
+            background: var(--secondary);
+            color: var(--text-light);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-top: 5px;
+            font-weight: 600;
+        }
+
+        /* Detalles de la Card */
+        .card-body {
+            flex-grow: 1;
+        }
+
+        .info-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 0.95rem;
+        }
+
+        .info-row i {
+            margin-right: 10px;
+            width: 20px;
+            color: var(--text-light);
+        }
+
+        .status-tag {
+            margin-left: auto;
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .paid { color: var(--success); }
+        .pending { color: var(--warning); }
+
+        .price-tag {
+            background: #e1f5fe;
+            color: #0288d1;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 700;
+        }
+
+        .pending-box {
+            background: #fff8e1;
+            border-left: 4px solid var(--warning);
+            padding: 10px;
+            margin-top: 15px;
+            font-size: 0.85rem;
+            color: #856404;
+        }
+
+        /* Sección de Documentación */
+        .docs-section {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .docs-section h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .docs-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            list-style: none;
+        }
+
+        .doc-item {
+            background: var(--bg-body);
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+            border: 1px solid #e0e0e0;
+        }
+
+        .doc-item span {
+            background: var(--primary);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+        }
+
+        /* Responsividad */
+        @media (max-width: 600px) {
+            header h1 { font-size: 1.4rem; }
+            body { padding: 10px; }
+            .dashboard-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Estado de Informes y Pago de Planillas</h1>
+        <p>Periodo Académico/Laboral 2025 – 2026</p>
+    </header>
+
+    <div class="dashboard-grid">
+        
+        <div class="card" style="border-top-color: #27ae60;">
+            <div class="card-header">
+                <h2>Jhonatan Chindoy</h2>
+                <span class="role-badge">Delegado</span>
+            </div>
+            <div class="card-body">
+                <div class="info-row">
+                    <i data-lucide="file-text"></i>
+                    <span>Informe Entregado</span>
+                    <span class="status-tag paid">✅ Dic 2025</span>
+                </div>
+                <div class="info-row">
+                    <i data-lucide="credit-card"></i>
+                    <span>Planilla Pagada</span>
+                    <span class="status-tag paid">✅ Dic 2025</span>
+                </div>
+                <div class="info-row">
+                    <i data-lucide="dollar-sign"></i>
+                    <span>Valor Pagado</span>
+                    <span class="status-tag"><span class="price-tag">$772.300</span></span>
+                </div>
+                <div class="pending-box">
+                    <strong>⏳ Pendientes:</strong><br>
+                    Enero 2026 y Febrero 2026 (Plazo: 15 de marzo)
+                </div>
+            </div>
+        </div>
+
+        <div class="card" style="border-top-color: #3498db;">
+            <div class="card-header">
+                <h2>Yesika Isabel Jacanamejoy</h2>
+                <span class="role-badge">Administradora</span>
+            </div>
+            <div class="card-body">
+                <div class="info-row">
+                    <i data-lucide="file-text"></i>
+                    <span>Informe Entregado</span>
+                    <span class="status-tag paid">✅ Ene 2026</span>
+                </div>
+                <div class="info-row">
+                    <i data-lucide="credit-card"></i>
+                    <span>Planilla Pagada</span>
+                    <span class="status-tag paid">✅ Ene 2026</span>
+                </div>
+                <div class="info-row">
+                    <i data-lucide="dollar-sign"></i>
+                    <span>Valor Pagado</span>
+                    <span class="status-tag"><span class="price-tag">$754.600</span></span>
+                </div>
+                <div class="pending-box">
+                    <strong>⏳ Pendientes:</strong><br>
+                    Planilla e informe de Diciembre 2025.
+                </div>
+            </div>
+        </div>
+
+        <div class="card" style="border-top-color: #9b59b6;">
+            <div class="card-header">
+                <h2>Mary Luz Anabel Gaviria</h2>
+                <span class="role-badge">Apoyo Profesional</span>
+            </div>
+            <div class="card-body">
+                <div class="info-row">
+                    <i data-lucide="file-text"></i>
+                    <span>Informe Entregado</span>
+                    <span class="status-tag paid">✅ Ene 2026</span>
+                </div>
+                <div class="info-row">
+                    <i data-lucide="credit-card"></i>
+                    <span>Planilla Pagada</span>
+                    <span class="status-tag paid">✅ Ene 2026</span>
+                </div>
+                <div class="info-row">
+                    <i data-lucide="dollar-sign"></i>
+                    <span>Valor Pagado</span>
+                    <span class="status-tag"><span class="price-tag">$508.300</span></span>
+                </div>
+                <div class="pending-box">
+                    <strong>⏳ Pendientes:</strong><br>
+                    Planilla e informe de Diciembre 2025.
+                </div>
+            </div>
+        </div>
+
+        <div class="card" style="border-top-color: #e67e22;">
+            <div class="card-header">
+                <h2>Jhon Jairo López Díaz</h2>
+                <span class="role-badge">Comunicador</span>
+            </div>
+            <div class="card-body">
+                <div class="info-row">
+                    <i data-lucide="file-text"></i>
+                    <span>Informe Entregado</span>
+                    <span class="status-tag paid">✅ Ene 2026</span>
+                </div>
+                <div class="info-row">
+                    <i data-lucide="credit-card"></i>
+                    <span>Planilla Pagada</span>
+                    <span class="status-tag paid">✅ Ene 2026</span>
+                </div>
+                <div class="info-row">
+                    <i data-lucide="dollar-sign"></i>
+                    <span>Valor Pagado</span>
+                    <span class="status-tag"><span class="price-tag">$503.600</span></span>
+                </div>
+                <div class="pending-box">
+                    <strong>⏳ Pendientes:</strong><br>
+                    Planillas de Diciembre 2025 y Febrero 2026.
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="docs-section">
+        <h3><i data-lucide="file-check"></i> Orden de entrega de documentos (PDF único)</h3>
+        <ul class="docs-list">
+            <li class="doc-item"><span>1</span> Informe del mes</li>
+            <li class="doc-item"><span>2</span> Cuenta de cobro</li>
+            <li class="doc-item"><span>3</span> Planilla</li>
+            <li class="doc-item"><span>4</span> Cédula</li>
+            <li class="doc-item"><span>5</span> RUT</li>
+        </ul>
+    </div>
+</div>
+
+<script>
+    // Inicializar iconos
+    lucide.createIcons();
+</script>
+
+</body>
+</html>
